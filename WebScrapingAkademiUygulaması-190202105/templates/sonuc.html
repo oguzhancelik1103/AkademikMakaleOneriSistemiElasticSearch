@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arama Sonuçları</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    function indirPDF(url) {
+        $.ajax({
+            url: '/indir_pdf',
+            type: 'GET',
+            data: {url: url},
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(data, status, xhr) {
+                var a = document.createElement('a');
+                var url = window.URL.createObjectURL(data);
+                a.href = url;
+                a.download = 'downloaded_file.pdf';  // PDF adını düzelt
+                document.body.append(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            },
+            error: function(xhr, status, error) {
+                alert("PDF indirilemedi: " + xhr.responseText);
+            }
+        });
+    }
+
+    function fetchArticleDetails(articleId) {
+        $.get(`/article_detail/${articleId}`, function(data) {
+            $('#articleModalTitle').text(data['Yayın Adı']);
+            $('#articleDetails').html(`<strong>Yazar ve Yayın Yılı:</strong> ${data['Yazar Adı ve Yayın Yılı']}<br>
+                                       <strong>Yayımlanma Tarihi:</strong> ${data['Yayımlanma Tarihi']}<br>
+                                       <strong>Alıntılanma Sayısı:</strong> ${data['Alıntılanma Sayısı']}<br>
+                                       <strong>PDF Link:</strong> <a href="${data['PDF Linki']}" target="_blank">Görüntüle</a>`);
+            $('#articleModal').modal('show');
+        }).fail(function() {
+            alert('Makale detayları yüklenemedi.');
+        });
+    }
+    </script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Arama Sonuçları</h1>
+        <div class="alert alert-info" role="alert">
+            <strong>Öneri:</strong> Aradığınız kelime için düzeltilmiş öneri: <em>{{ corrected }}</em>
+        </div>
+
+        <p class="text-center">Sonuçlar aşağıda listelenmiştir:</p>
+        <!-- Sonuçların gösterildiği liste -->
+        <ul class="list-group mt-4">
+            {% for veri in veri_listesi %}
+                <li class="list-group-item">
+                    <strong onclick="fetchArticleDetails('{{ veri['_id'] }}')" style="cursor: pointer;">{{ veri['Yayın Adı'] }}</strong> <br>
+                    <span>{{ veri['Yazar Adı ve Yayın Yılı'] }}</span> - {{ veri['Alıntılanma Sayısı'] }}</em><br>
+                    <a href="{{ veri['URL'] }}" target="_blank">PDF Linki</a>
+                    {% if veri['PDF Linki'] %}
+                        <button onclick="indirPDF('{{ veri['PDF Linki'] }}')" class="btn btn-sm btn-primary">PDF İndir</button>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        <!-- Geri Dön Butonu -->
+        <div class="d-grid mt-5">
+            <a href="/" class="btn btn-lg btn-warning">Geri Dön ve Yeni Arama Yap</a>
+        </div>
+    </div>
+
+    <!-- Modal for displaying article details -->
+    <div class="modal fade" id="articleModal" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="articleModalTitle">Makale Detayları</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="articleDetails">
+                    <!-- Article details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

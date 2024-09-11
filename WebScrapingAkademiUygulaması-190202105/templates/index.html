@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Scholar Veri Çekme ve Arama</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Google Scholar Veri Çekme ve Arama</h1>
+        <p class="text-center">Makale başlığı veya anahtar kelime ile veri çekin veya Elasticsearch üzerinde arama yapın</p>
+
+        <!-- Veri Çekme ve Arama Formu -->
+        <div class="card mb-5">
+            <div class="card-body">
+                <h4 class="card-title">Makale Veri Çekme ve Arama</h4>
+                <form action="/tara" method="POST" class="mt-4">
+                    <div class="mb-3">
+                        <label for="sorgu" class="form-label">Makale Başlığı veya Anahtar Kelime:</label>
+                        <input type="text" class="form-control" id="sorgu" name="sorgu" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sayfa_sayisi" class="form-label">Google Scholar Sayfa Sayısı (Opsiyonel):</label>
+                        <input type="number" class="form-control" id="sayfa_sayisi" name="sayfa_sayisi" min="1" placeholder="Örneğin: 1">
+                        <small class="form-text text-muted">Google Scholar'dan veri çekmek istemiyorsanız boş bırakabilirsiniz.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="filtre" class="form-label">Sonuçları Filtrele (Opsiyonel):</label>
+                        <select class="form-select" id="filtre" name="filtre">
+                            <option value="">Filtre Seçiniz</option>
+                            <option value="tarih">Yayımlanma Tarihine Göre</option>
+                            <option value="atıf">Atıf Sayısına Göre</option>
+                        </select>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Veri Çek ve Ara</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

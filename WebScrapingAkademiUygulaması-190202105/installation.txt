@@ -1,0 +1,22 @@
+python 
+
+.\venv\Scripts\activate
+python scraping.py
+
+--------------------
+elasticsearch 
+
+cd D:
+cd elasticsearch-8.15.0\bin
+.\elasticsearch.bat
+
+veri kontrolü
+
+GET /scholar_veriler/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
